@@ -80,6 +80,24 @@ push bp
 pop bp
 ret
 
+; Print string
+; Args:
+;   Stack = string pointer
+_print:
+pusha
+mov bp, sp
+    mov si, [bp+18]
+    mov ah, 0xE
+.next:
+    lodsb
+    and al, al
+    jz .done
+    int 0x10
+    jmp .next
+.done:
+popa
+ret 2
+
 ; Print 16-bit integer (word). Supports base 1-16
 ; Args:
 ;   Stack = number, base
