@@ -80,6 +80,30 @@ push bp
 pop bp
 ret
 
+; Print 16-bit integer (word). Supports base 1-16
+; Args:
+;   Stack = number, base
+_printw:
+pusha
+mov bp, sp
+    mov ax, [bp+18]
+    xor dx, dx
+    div word [bp+20]
+    test ax, ax
+    jz .digit
+    push word [bp+20]
+    push ax
+    call _printw
+.digit:
+    mov bx, dx
+    mov ax, [_SZ_HEX+bx]
+    mov ah, 0xE
+    int 0x10
+popa
+ret 4
+
+_SZ_HEX: db "0123456789ABCDEF"
+
 ;-----------------------------------
 ; Master Boot Record (MBR)
 ;-----------------------------------
