@@ -19,6 +19,11 @@ start:
     mov sp, 0x7C00 + 512 + 1024
     sti
     
+    ; Calculate the address of our entry point (Instruction Pointer)
+    call getIP
+    sub ax, $ - start
+    mov [_IP], ax
+    
 suspend:
     hlt
     jmp suspend
@@ -30,6 +35,19 @@ suspend:
 _AX: dw 0
 _SS: dw 0
 _SP: dw 0
+_IP: dw 0
+
+;-----------------------------------
+; FUNCTIONS
+;-----------------------------------
+
+; Copies the return address of this function into AX
+getIP:
+push bp
+    mov bp, sp
+    mov ax, [bp+2]
+pop bp
+ret
 
 ;-----------------------------------
 ; Master Boot Record (MBR)
