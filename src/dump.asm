@@ -32,6 +32,37 @@ suspend:
 ; DATA
 ;-----------------------------------
 
+%imacro line 0-*
+    %if %0 >= 1
+        db %1
+    %endif
+    %if %0 >= 2
+        db %{2:-1}
+    %else
+        db 13, 10
+    %endif
+%endmacro
+
+_SZ_FORMAT:
+    line " CS:IP = %x:%x"
+    line   
+    line " SS:SP = %x:%x"
+    line "    BP = %x"
+    line   
+    line " AX = %x"
+    line " CX = %x"
+    line " DX = %x"
+    line " BX = %x"
+    line " SI = %x"
+    line " DI = %x"
+    line      
+    line " DS = %x"
+    line " ES = %x"
+    line " FS = %x"
+    line " GS = %x"
+    line
+    line " FLAGS = %b", 0 
+
 _AX: dw 0
 _SS: dw 0
 _SP: dw 0
