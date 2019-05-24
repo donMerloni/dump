@@ -46,6 +46,11 @@ start:
     sub ax, $ - start
     mov [_IP], ax
     
+    ; Push flags manually, because we don't have a symbol/register for EFLAGS that is compatible with normal push syntax
+    pushf
+    printf _SZ_FORMAT, cs, word [_IP], word [_SS], word [_SP], bp, word [_AX], cx, dx, bx, si, di, ds, es, fs, gs
+    popf
+    
 suspend:
     hlt
     jmp suspend
