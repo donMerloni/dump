@@ -6,6 +6,28 @@ ORG 0x7C00
 ; CODE
 ;-----------------------------------
 
+; Multipush
+%imacro push 1-*
+    %rep %0
+        push %1
+        %rotate 1
+    %endrep
+%endmacro
+
+; Printf helper
+%imacro printf 1-*
+    %if %0 > 1
+        push %{-1:2}
+    %endif
+    
+    push %1
+    call _printf
+    
+    %if %0 > 1
+        add sp, (%0 - 1) * 2 
+    %endif
+%endmacro
+
 start:
     ; Save registers
     mov [_AX], ax
