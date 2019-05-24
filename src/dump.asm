@@ -122,6 +122,84 @@ ret 4
 
 _SZ_HEX: db "0123456789ABCDEF"
 
+; A simple and naive C-style printf function.
+; Specifiers:
+;   %s = string | %d = decimal int16 | %x = hex int16 | %b = binary int16
+;   %% = % | any other specifier = char
+; Args:
+;   Stack = format, args...
+_printf:
+pusha
+mov bp, sp
+
+    ; Get pointer to format string
+    mov si, [bp+18]
+    ; Get pointer to stack arguments
+    lea di, [bp+18]
+    add di, 2
+    
+    ; Loop over format string
+.loop:
+    mov al, [si]
+    test al, al
+    jz .end
+    
+    push 0  ; possible argument 2
+    
+    cmp al, '%'
+    jne .noFormat
+    
+    push word [di] ; argument 1
+    add di, 2
+    inc si
+    
+    ; Check format
+    mov bl, byte [si]
+    cmp bl, '%'
+    je .noFormat
+.checkS:
+    cmp bl, 's'
+    je .string
+.checkD:
+    cmp bl, 'd'
+    jne .checkX
+    mov word [bp-2], 10
+    jmp .word
+.checkX:
+    cmp bl, 'x'
+    jne .checkB
+    mov word [bp-2], 16
+    jmp .word
+.checkB:
+    cmp bl, 'b'
+    jne .char
+    mov word [bp-2], 2
+    
+.word:
+    call _printw
+    jmp .loopContinue
+    
+.string:
+    call _print
+    jmp .loopContinue_1UnusedArgs
+    
+.char:
+    pop ax
+    
+.noFormat:
+    mov ah, 0xE
+    int 0x10
+    
+.loopContinue_1UnusedArgs:
+    pop ax
+.loopContinue:
+    inc si
+    jmp .loop
+    
+.end:
+popa
+ret 2
+
 ;-----------------------------------
 ; Master Boot Record (MBR)
 ;-----------------------------------
