@@ -1,5 +1,7 @@
 # dump
-A bootable real mode program that prints initial register contents
+A bootable real mode program that prints initial register contents.
+
+For what it's worth, also doubles as an example of how a simple bootable program might be achieved.
 
 ## Requirements
 - [nasm](https://nasm.us), to assemble nasm-flavored 16-bit x86 assembly
